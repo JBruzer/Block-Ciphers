@@ -11,17 +11,20 @@ SUFFIX = b";session-id=31337"
 
 
 def xor_bytes(left: bytes, right: bytes) -> bytes:
+    # Perform a byte-wise XOR operation between two byte strings of equal length.
     if len(left) != len(right):
         raise ValueError("XOR operands must have the same length")
     return bytes(a ^ b for a, b in zip(left, right))
 
 
 def pkcs7_pad(data: bytes, block_size: int = AES_BLOCK_SIZE) -> bytes:
+    # Pad the input data using PKCS#7 padding to make its length a multiple of the block size.
     padding_length = block_size - (len(data) % block_size)
     return data + bytes([padding_length]) * padding_length
 
 
 def pkcs7_unpad(data: bytes, block_size: int = AES_BLOCK_SIZE) -> bytes:
+    # Remove PKCS#7 padding from the input data, validating the padding bytes.
     if not data or len(data) % block_size:
         raise ValueError("Invalid padded data length")
     padding_length = data[-1]
@@ -33,6 +36,7 @@ def pkcs7_unpad(data: bytes, block_size: int = AES_BLOCK_SIZE) -> bytes:
 
 
 def aes_encrypt_block(block: bytes, key: bytes) -> bytes:
+    # Encrypt a single block of data using AES-128 in ECB mode.
     if len(block) != AES_BLOCK_SIZE or len(key) != AES_BLOCK_SIZE:
         raise ValueError("AES-128 requires 16-byte keys and blocks")
     encryptor = Cipher(algorithms.AES(key), modes.ECB()).encryptor()
@@ -40,6 +44,7 @@ def aes_encrypt_block(block: bytes, key: bytes) -> bytes:
 
 
 def aes_decrypt_block(block: bytes, key: bytes) -> bytes:
+    # Decrypt a single block of data using AES-128 in ECB mode.
     if len(block) != AES_BLOCK_SIZE or len(key) != AES_BLOCK_SIZE:
         raise ValueError("AES-128 requires 16-byte keys and blocks")
     decryptor = Cipher(algorithms.AES(key), modes.ECB()).decryptor()
@@ -47,6 +52,7 @@ def aes_decrypt_block(block: bytes, key: bytes) -> bytes:
 
 
 def encrypt_cbc(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
+    # Encrypt the plaintext using AES-128 in CBC mode with PKCS#7 padding.
     padded = pkcs7_pad(plaintext)
     previous_ciphertext = iv
     blocks = []
@@ -61,6 +67,7 @@ def encrypt_cbc(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
 
 
 def decrypt_cbc(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
+    # Decrypt the ciphertext using AES-128 in CBC mode and remove PKCS#7 padding.
     if not ciphertext or len(ciphertext) % AES_BLOCK_SIZE:
         raise ValueError("CBC ciphertext must contain complete AES blocks")
     previous_ciphertext = iv
@@ -76,17 +83,20 @@ def decrypt_cbc(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
 
 
 def submit(user_input: str) -> bytes:
+    # Sanitize user input and encrypt it using AES-128 in CBC mode.
     sanitized = user_input.replace(";", "%3B").replace("=", "%3D")
     message = PREFIX + sanitized.encode("utf-8") + SUFFIX
     return encrypt_cbc(message, KEY, IV)
 
 
 def verify(ciphertext: bytes) -> bool:
+    # Decrypt the ciphertext and check if the plaintext contains ";admin=true;".
     plaintext = decrypt_cbc(ciphertext, KEY, IV)
     return b";admin=true;" in plaintext
 
 
 def cbc_bitflipping_attack() -> bytes:
+    # Perform a bit-flipping attack on the CBC-encrypted ciphertext to inject ";admin=true;".
     original_block = b":admin<true:AAAA"
     target_block = b";admin=true;AAAA"
     ciphertext = bytearray(submit("A" * 12 + original_block.decode("ascii")))

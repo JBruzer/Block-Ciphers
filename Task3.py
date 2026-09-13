@@ -2,7 +2,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-
 OUTPUT_DIR = Path("task3_graphs")
 OUTPUT_DIR.mkdir(exist_ok=True)
 

@@ -9,19 +9,21 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 AES_BLOCK_SIZE = 16
 BMP_HEADER_SIZE = 54
 
-
 def pkcs7_pad(data: bytes, block_size: int = AES_BLOCK_SIZE) -> bytes:
+    # Pad the input data using PKCS#7 padding to make its length a multiple of the block size.
     padding_length = block_size - (len(data) % block_size)
     return data + bytes([padding_length]) * padding_length
 
 
 def xor_bytes(left: bytes, right: bytes) -> bytes:
+    # Perform a byte-wise XOR operation between two byte strings of equal length.
     if len(left) != len(right):
         raise ValueError("XOR operands must have the same length")
     return bytes(a ^ b for a, b in zip(left, right))
 
 
 def aes_encrypt_block(block: bytes, key: bytes) -> bytes:
+    # Encrypt a single block of data using AES-128 in ECB mode.
     if len(block) != AES_BLOCK_SIZE or len(key) != AES_BLOCK_SIZE:
         raise ValueError("AES-128 requires a 16-byte key and 16-byte blocks")
     encryptor = Cipher(algorithms.AES(key), modes.ECB()).encryptor()
@@ -29,6 +31,7 @@ def aes_encrypt_block(block: bytes, key: bytes) -> bytes:
 
 
 def encrypt_ecb(plaintext: bytes, key: bytes) -> bytes:
+    # Encrypt the plaintext using AES-128 in ECB mode with PKCS#7 padding.
     padded = pkcs7_pad(plaintext)
     return b"".join(
         aes_encrypt_block(padded[start : start + AES_BLOCK_SIZE], key)
@@ -37,6 +40,7 @@ def encrypt_ecb(plaintext: bytes, key: bytes) -> bytes:
 
 
 def encrypt_cbc(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
+    # Encrypt the plaintext using AES-128 in CBC mode with PKCS#7 padding.
     if len(iv) != AES_BLOCK_SIZE:
         raise ValueError("CBC requires a 16-byte IV")
 
@@ -55,6 +59,7 @@ def encrypt_cbc(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
 
 
 def encrypt_bmp(input_path: Path, output_path: Path, mode: str) -> tuple[bytes, bytes | None]:
+    # Encrypt a BMP file using AES-128 in either ECB or CBC mode, preserving the BMP header.
     original = input_path.read_bytes()
     if len(original) < BMP_HEADER_SIZE or original[:2] != b"BM":
         raise ValueError("Input must be a BMP with at least a 54-byte header")
