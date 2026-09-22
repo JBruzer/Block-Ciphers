@@ -91,9 +91,9 @@ def part2_malleability_mitm(pub, priv):
     c = encrypt(m, pub)
     c_tampered = (c * pow(2, e, n)) % n
     m_tampered = decrypt(c_tampered, priv)
-    print(f"  Homomorphic tamper: enc(1000) * 2^e decrypts to {m_tampered} "
+    print(f"  Tamper: enc(1000) * 2^e decrypts to {m_tampered} "
           f"(= 2*1000: {m_tampered == 2000})")
-    print("    -> an attacker can silently alter a value (e.g. double a payment)")
+    print("    -> an attacker can silently alter a value")
     print()
 
 
