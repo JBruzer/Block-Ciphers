@@ -1,0 +1,19 @@
+User       Algo  Cost  Salt                     Password      Time (s)   Guesses
+--------------------------------------------------------------------------------
+Bilbo      2b    08    J9FW66ZdPI2nrIMcOxFYI.   welcome        9499.14    131200
+Gandalf    2b    08    J9FW66ZdPI2nrIMcOxFYI.   wizard         9501.60    132400
+Thorin     2b    08    J9FW66ZdPI2nrIMcOxFYI.   diamond        2647.42     31400
+Fili       2b    09    M9xNRFBDn0pUkPKIVCSBzu   desire         2612.15     31000
+Kili       2b    09    M9xNRFBDn0pUkPKIVCSBzu   ossify         8091.44     76600
+Balin      2b    10    xGKjb94iwmlth954hEaw3O   hangout        5650.79     49600
+Dwalin     2b    10    xGKjb94iwmlth954hEaw3O   drossy         3552.83     34400
+Oin        2b    10    xGKjb94iwmlth954hEaw3O   ispaghul       6831.54     57400
+Gloin      2b    11    /8UByex2ktrWATZOBLZ0Du   oversave       8215.17     78400
+Dori       2b    11    /8UByex2ktrWATZOBLZ0Du   indoxylic      6683.07     55200
+Nori       2b    11    /8UByex2ktrWATZOBLZ0Du   swagsman       9390.48    111400
+Ori        2b    12    rMeWZtAVcGHLEiDNeKCz8O   airway          473.61      2800
+Bifur      2b    12    rMeWZtAVcGHLEiDNeKCz8O   corrosible     2351.56     26200
+Bofur      2b    12    rMeWZtAVcGHLEiDNeKCz8O   libellate      7277.19     62000
+Durin      2b    13    6ypcazOOkUT/a7EwMuIjH.   purrone        8916.14     90400
+
+Total wall-clock time: 9501.88s
